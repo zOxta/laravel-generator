@@ -1,8 +1,15 @@
 /**
-     * Remove the specified $MODEL_NAME$ from storage.
-     * DELETE /$MODEL_NAME_PLURAL_CAMEL$/{id}
+     * Delete $MODEL_NAME$
      *
-     * @param  int $id
+     * @Delete("/{$MODEL_NAME_CAMEL$}")
+     * @Parameters({
+     *      @Parameter("$MODEL_NAME_CAMEL$: `1`", description="Id of the $MODEL_NAME_CAMEL$ to delete", type="integer", required=true)
+     * })
+     * @Transaction({
+     *      @Request(headers={"Accept": "application/json"}, body={
+     *          "_method": "DELETE"
+     *      }),
+     *      @Response(200, headers={"Content-Type": "application/json"})
+     * })
      *
-     * @return Response
      */

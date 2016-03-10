@@ -58,7 +58,7 @@ class BaseCommand extends Command
 
     public function performPostActionsWithMigration()
     {
-        $this->performPostActions(true);
+        $this->performPostActions(false);
     }
 
     private function saveSchemaFile()
@@ -69,10 +69,13 @@ class BaseCommand extends Command
             $fileFields[] = [
                 'fieldInput'  => $field['fieldInput'],
                 'htmlType'    => $field['htmlType'],
-                'validations' => $field['validations'],
+                'create_validations' => $field['create_validations'],
+                'update_validations' => $field['update_validations'],
                 'searchable'  => $field['searchable'],
                 'fillable'    => $field['fillable'],
                 'primary'     => $field['primary'],
+                'relation'    => $field['relation'],
+                'sample'      => $field['sample'],
             ];
         }
 

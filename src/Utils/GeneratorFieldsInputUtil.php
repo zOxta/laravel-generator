@@ -22,10 +22,28 @@ class GeneratorFieldsInputUtil
                 $htmlType = 'text';
             }
 
-            if (isset($field['validations'])) {
-                $validations = $field['validations'];
+            if (isset($field['update_validations'])) {
+                $update_validations = $field['update_validations'];
             } else {
-                $validations = '';
+                $update_validations = '';
+            }
+
+            if (isset($field['create_validations'])) {
+                $create_validations = $field['create_validations'];
+            } else {
+                $create_validations = '';
+            }
+
+            if (isset($field['sample'])) {
+                $sample = $field['sample'];
+            } else {
+                $sample = '';
+            }
+
+            if (isset($field['relation'])) {
+                $relation = $field['relation'];
+            } else {
+                $relation = '';
             }
 
             if (isset($field['searchable'])) {
@@ -46,7 +64,7 @@ class GeneratorFieldsInputUtil
                 $primary = false;
             }
 
-            $fieldsArr[] = self::processFieldInput($field['fieldInput'], $htmlType, $validations, $searchable, $fillable, $primary);
+            $fieldsArr[] = self::processFieldInput($field['fieldInput'], $htmlType, $create_validations, $update_validations, $sample, $relation, $searchable, $fillable, $primary);
         }
 
         return $fieldsArr;
@@ -63,7 +81,7 @@ class GeneratorFieldsInputUtil
         return true;
     }
 
-    public static function processFieldInput($fieldInput, $htmlType, $validations, $searchable = false, $fillable = true, $primary = false)
+    public static function processFieldInput($fieldInput, $htmlType, $create_validations, $update_validations, $sample = false, $relation = false, $searchable = false, $fillable = true, $primary = false)
     {
         $fieldInputs = explode(':', $fieldInput);
 
@@ -79,17 +97,20 @@ class GeneratorFieldsInputUtil
         }
 
         return [
-            'fieldInput'     => $fieldInput,
-            'fieldTitle'     => Str::title(str_replace('_', ' ', $fieldName)),
-            'fieldType'      => $fieldType,
-            'fieldName'      => $fieldName,
-            'databaseInputs' => $databaseInputs,
-            'htmlType'       => $htmlType,
-            'htmlTypeInputs' => $htmlTypeInputs,
-            'validations'    => $validations,
-            'searchable'     => $searchable,
-            'fillable'       => $fillable,
-            'primary'        => $primary,
+            'fieldInput'         => $fieldInput,
+            'fieldTitle'         => Str::title(str_replace('_', ' ', $fieldName)),
+            'fieldType'          => $fieldType,
+            'fieldName'          => $fieldName,
+            'databaseInputs'     => $databaseInputs,
+            'htmlType'           => $htmlType,
+            'htmlTypeInputs'     => $htmlTypeInputs,
+            'create_validations' => $create_validations,
+            'update_validations' => $update_validations,
+            'sample'             => $sample,
+            'relation'           => $relation,
+            'searchable'         => $searchable,
+            'fillable'           => $fillable,
+            'primary'            => $primary,
         ];
     }
 

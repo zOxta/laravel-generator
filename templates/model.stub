@@ -8,29 +8,93 @@ $DOCS$
 class $MODEL_NAME$ extends Model
 {
 $SOFT_DELETE$
-    public $table = "$TABLE_NAME$";
-    $TIMESTAMPS$
-$SOFT_DELETE_DATES$
+    /**
+     * The connection name for the model.
+     *
+     * @var string
+     */
+    protected $connection = 'sqlsrv';
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = "$MODEL_NAME$";
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
 $PRIMARY$
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['CreatedDate', 'UpdatedDate', 'DeletedAt'];
+    $TIMESTAMPS$
+
+    /**
+     * The storage format of the model's date columns.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'M d Y H:i:s.000A';
+
+    /**
+     * Fillable fields
+     *
+     * @var array
+     */
     public $fillable = [
         $FIELDS$
     ];
+
+    /**
+     * Sample values for each fillable input field
+     *
+     * @var array
+     */
+    public $sample_values = [
+        $SAMPLE_VALUES$
+    ];
+
+    /**
+     * Hidden fields
+     *
+     * @var array
+     */
+    protected $hidden = ['CreatedDate', 'UpdatedDate', 'DeletedAt'];
 
     /**
      * The attributes that should be casted to native types.
      *
      * @var array
      */
-    protected $casts = [
+    public $casts = [
         $CAST$
     ];
 
     /**
-     * Validation rules
+     * $MODEL_NAME$ validation rules when storing
      *
      * @var array
      */
-    public static $rules = [
-        $RULES$
+    public static $createValidatorRules = [
+        $CREATE_RULES$
     ];
+
+    /**
+     * $MODEL_NAME$ validation rules when updating
+     *
+     * @var array
+     */
+    public static $updateValidatorRules = [
+        $UPDATE_RULES$
+    ];
+
+$RELATIONS$
 }

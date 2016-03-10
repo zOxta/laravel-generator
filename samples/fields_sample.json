@@ -1,59 +1,66 @@
 [
   {
-    "fieldInput": "id:increments",
-    "htmlType": "",
-    "validations": "",
-    "searchable": false,
+    "fieldInput": "Id:increments",
+    "create_validations": "",
+    "update_validations": "",
     "fillable": false,
     "primary": true
   },
   {
-    "fieldInput": "title:string,20",
-    "htmlType": "text",
-    "validations": "required",
-    "searchable": true
+    "fieldInput": "FirstName:string,50",
+    "create_validations": "required",
+    "update_validations": "sometimes",
+    "fillable": true,
+    "sample": "John"
   },
   {
-    "fieldInput": "email_test:string",
-    "htmlType": "email",
-    "searchable": true
+    "fieldInput": "LastName:string,50",
+    "create_validations": "required",
+    "update_validations": "sometimes",
+    "fillable": true,
+    "sample": "Smith"
   },
   {
-    "fieldInput": "date_test:datetime",
-    "htmlType": "date"
+    "fieldInput": "CompanyName:string,100",
+    "create_validations": "max:256",
+    "update_validations": "max:256",
+    "fillable": true,
+    "sample": "PANERA"
   },
   {
-    "fieldInput": "number_test:integer",
-    "htmlType": "number"
+    "fieldInput": "Email:string",
+    "create_validations": "required|email|unique:User,Email",
+    "update_validations": "sometimes|email|unique:User,Email",
+    "fillable": true,
+    "sample": "john@email.com"
   },
   {
-    "fieldInput": "file_test:string",
-    "htmlType": "file"
+    "fieldInput": "PrimaryPhone:string",
+    "create_validations": "required|string|numeric|size:10",
+    "update_validations": "sometimes|string|numeric|size:10",
+    "fillable": true,
+    "sample": "9876543210"
   },
   {
-    "fieldInput": "password_test:string",
-    "htmlType": "password"
+    "fieldInput": "UserRoleId:integer",
+    "create_validations": "required|integer|in:1,2,3",
+    "update_validations": "sometimes|integer|in:1,2,3",
+    "fillable": true,
+    "sample": "2"
   },
   {
-    "fieldInput": "select_test:string",
-    "htmlType": "select:Option1,Option2,Option3,Option4,Option5",
-    "searchable": true
+    "fieldInput": "UserStatusId:integer",
+    "create_validations": "required|exists:UserStatus,Id",
+    "update_validations": "sometimes|exists:UserStatus,Id",
+    "fillable": true,
+    "relation": "userStatus,belongsTo,UserStatus,UserStatusId,Id",
+    "sample": "[relation]"
   },
   {
-    "fieldInput": "enum_test:enum",
-    "htmlType": "enum:Mon,Tue,Wed,Thu,Fri,Sat,Sun",
-    "searchable": true
-  },
-  {
-    "fieldInput": "radio_test:string",
-    "htmlType": "radio:Male,Female"
-  },
-  {
-    "fieldInput": "checkbox_test:string",
-    "htmlType": "checkbox:Check1,Check2"
-  },
-  {
-    "fieldInput": "body:text",
-    "htmlType": "textarea"
+    "fieldInput": "Notes:text",
+    "create_validations": "max:1000",
+    "update_validations": "max:1000",
+    "fillable": true,
+    "sample": "Some notes!"
   }
 ]

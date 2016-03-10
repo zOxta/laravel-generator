@@ -1,1 +1,4 @@
-Route::resource("$MODEL_NAME_PLURAL_CAMEL$", "$MODEL_NAME$APIController");
+# ======= $MODEL_NAME_PLURAL_CAMEL$ ======= #
+$router->resource("$MODEL_NAME_PLURAL_CAMEL$", "$MODEL_NAME$APIController", [
+    #'except' => ['create', 'edit']
+]);

@@ -1,91 +1,98 @@
-<?php
+<?php namespace $NAMESPACE_API_CONTROLLER$;
 
-namespace $NAMESPACE_API_CONTROLLER$;
-
-use $NAMESPACE_API_REQUEST$\Create$MODEL_NAME$APIRequest;
-use $NAMESPACE_API_REQUEST$\Update$MODEL_NAME$APIRequest;
-use $NAMESPACE_MODEL$\$MODEL_NAME$;
-use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
+use App\Utils\HttpStatusCode;
 use Illuminate\Http\Request;
-use InfyOm\Generator\Controller\AppBaseController;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
-use InfyOm\Generator\Utils\ResponseUtil;
-use Prettus\Repository\Criteria\RequestCriteria;
-use Response;
+
+use $NAMESPACE_MODEL$\$MODEL_NAME$;
 
 $DOC_CONTROLLER$
-class $MODEL_NAME$APIController extends AppBaseController
+class $MODEL_NAME$APIController extends Controller
 {
-    /** @var  $MODEL_NAME$Repository */
-    private $$MODEL_NAME_CAMEL$Repository;
+    protected $api;
 
-    function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo)
-    {
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
-    }
+    public function __construct(ApiController $api) { $this->api = $api; }
 
     $DOC_INDEX$
-    public function index(Request $request)
+    public function index()
     {
-        $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new RequestCriteria($request));
-        $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new LimitOffsetCriteria($request));
-        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->all();
-
-        return $this->sendResponse($$MODEL_NAME_PLURAL_CAMEL$->toArray(), "$MODEL_NAME_PLURAL$ retrieved successfully");
+        return $this->api->success('$MODEL_NAME_PLURAL_CAMEL$.index', $MODEL_NAME$::all()->toArray());
     }
 
     $DOC_STORE$
-    public function store(Create$MODEL_NAME$APIRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
+        $this->validate($request, $MODEL_NAME$::$createValidatorRules);
 
-        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
+        $fields = $this->reformatFields($request->all());
 
-        return $this->sendResponse($$MODEL_NAME_PLURAL_CAMEL$->toArray(), "$MODEL_NAME$ saved successfully");
+        $created = $MODEL_NAME$::create($fields);
+
+        return isset($created->Id)
+
+            ? $this->api->success('$MODEL_NAME_PLURAL_CAMEL$.create', $created->toArray(), HttpStatusCode::HTTP_CREATED)
+
+            : $this->api->error('$MODEL_NAME_PLURAL_CAMEL$.create', $created, HttpStatusCode::HTTP_BAD_REQUEST);
     }
 
     $DOC_SHOW$
-    public function show($id)
+    public function show(Request $request, $MODEL_NAME$ $$MODEL_NAME_CAMEL$)
     {
-        /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
-
-        if(empty($$MODEL_NAME_CAMEL$)) {
-            return Response::json(ResponseUtil::makeError("$MODEL_NAME$ not found"), 400);
-        }
-
-        return $this->sendResponse($$MODEL_NAME_CAMEL$->toArray(), "$MODEL_NAME$ retrieved successfully");
+        return $this->api->success('$MODEL_NAME_PLURAL_CAMEL$.show', $$MODEL_NAME_CAMEL$->toArray());
     }
 
     $DOC_UPDATE$
-    public function update($id, Update$MODEL_NAME$APIRequest $request)
+    public function update(Request $request, $MODEL_NAME$ $$MODEL_NAME_CAMEL$)
     {
-        $input = $request->all();
 
-        /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
+        $MODEL_NAME$::$updateValidatorRules['Email'] .= ",{$$MODEL_NAME_CAMEL$->Id}";
 
-        if (empty($$MODEL_NAME_CAMEL$)) {
-            return Response::json(ResponseUtil::makeError("$MODEL_NAME$ not found"), 400);
-        }
+        $this->validate($request, $MODEL_NAME$::$updateValidatorRules);
 
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($input, $id);
+        $fields = $this->reformatFields($request->all());
 
-        return $this->sendResponse($$MODEL_NAME_CAMEL$->toArray(), "$MODEL_NAME$ updated successfully");
+        $updated = $$MODEL_NAME_CAMEL$->update($fields);
+
+        return $updated
+
+            ? $this->api->success('$MODEL_NAME_PLURAL_CAMEL$.update', $$MODEL_NAME_CAMEL$->toArray(), HttpStatusCode::HTTP_OK)
+
+            : $this->api->error('$MODEL_NAME_PLURAL_CAMEL$.update', $$MODEL_NAME_CAMEL$, HttpStatusCode::HTTP_BAD_REQUEST);
+
     }
 
     $DOC_DESTROY$
-    public function destroy($id)
+    public function destroy($MODEL_NAME$ $$MODEL_NAME_CAMEL$)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
-
-        if(empty($$MODEL_NAME_CAMEL$)) {
-            return Response::json(ResponseUtil::makeError("$MODEL_NAME$ not found"), 400);
-        }
-
         $$MODEL_NAME_CAMEL$->delete();
 
-        return $this->sendResponse($id, "$MODEL_NAME$ deleted successfully");
+        return $this->api->success('$MODEL_NAME_PLURAL_CAMEL$.destroy', [], HttpStatusCode::HTTP_OK);
+    }
+
+    /**
+     * Reformat certain fields in a certain way
+     *
+     * @param $fields
+     *
+     * @return mixed
+     */
+    private function reformatFields($fields)
+    {
+
+        foreach ($fields as $key => $value) {
+
+            switch ($key) {
+                # add any other formatting cases needed
+                case 'PrimaryPhone':
+                case 'SecondaryPhone':
+                     $fields[$key] = '1 (' . substr($value, 0, 3) . ') ' . substr($value, 3, 3) . '-' . substr($value, 6);
+                    break;
+            }
+
+        }
+
+        return $fields;
     }
 }

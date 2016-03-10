@@ -130,8 +130,9 @@ class TableFieldsGenerator
 
         $createdAtName = config('infyom.laravel_generator.timestamps.created_at', 'created_at');
         $updatedAtName = config('infyom.laravel_generator.timestamps.updated_at', 'updated_at');
+        $deletedAtName = config('infyom.laravel_generator.timestamps.deleted_at', 'deleted_at');
 
-        return [$createdAtName, $updatedAtName];
+        return [$createdAtName, $updatedAtName, $deletedAtName];
     }
 
     /**

@@ -1,4 +1,3 @@
 /**
- * Class $MODEL_NAME$Controller
- * @package $NAMESPACE_API_CONTROLLER$
+ * @Resource("$MODEL_NAME_PLURAL$ Collection", uri="/$MODEL_NAME_PLURAL_CAMEL$")
  */

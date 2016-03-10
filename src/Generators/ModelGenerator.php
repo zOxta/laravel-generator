@@ -53,6 +53,8 @@ class ModelGenerator
 
         $templateData = $this->fillTimestamps($templateData);
 
+        $templateData = $this->fillRelations($templateData);
+
         if ($this->commandData->getOption('primary')) {
             $primary = str_repeat(' ', 4)."protected \$primaryKey = '".$this->commandData->getOption('primary')."';\n";
         } else {
@@ -61,11 +63,15 @@ class ModelGenerator
 
         $templateData = str_replace('$PRIMARY$', $primary, $templateData);
 
-        $templateData = str_replace('$FIELDS$', implode(PHP_EOL.str_repeat(' ', 8), $fillables), $templateData);
+        $templateData = str_replace('$FIELDS$', implode(',' . PHP_EOL.str_repeat(' ', 8), $fillables), $templateData);
 
-        $templateData = str_replace('$RULES$', implode(PHP_EOL.str_repeat(' ', 8), $this->generateRules()), $templateData);
+        $templateData = str_replace('$CREATE_RULES$', implode(',' . PHP_EOL.str_repeat(' ', 8), $this->generateCreateRules()), $templateData);
 
-        $templateData = str_replace('$CAST$', implode(PHP_EOL.str_repeat(' ', 8), $this->generateCasts()), $templateData);
+        $templateData = str_replace('$UPDATE_RULES$', implode(',' . PHP_EOL.str_repeat(' ', 8), $this->generateUpdateRules()), $templateData);
+
+        $templateData = str_replace('$CAST$', implode(',' . PHP_EOL.str_repeat(' ', 8), $this->generateCasts()), $templateData);
+
+        $templateData = str_replace('$SAMPLE_VALUES$', implode(',' . PHP_EOL.str_repeat(' ', 8), $this->generateSampleValues()), $templateData);
 
         return $templateData;
     }
@@ -106,20 +112,57 @@ class ModelGenerator
 
         $replace = '';
 
-        if ($this->commandData->getOption('fromTable')) {
+        #if ($this->commandData->getOption('fromTable')) {
             if (empty($timestamps)) {
-                $replace = "\n\tpublic \$timestamps = false;\n";
+                $replace = "\n    public \$timestamps = false;\n";
             } else {
-                list($created_at, $updated_at) = collect($timestamps)->map(function ($field) {
+                list($created_at, $updated_at, $deleted_at) = collect($timestamps)->map(function ($field) {
                     return !empty($field) ? "'$field'" : 'null';
                 });
 
-                $replace .= "\n\tconst CREATED_AT = $created_at;";
-                $replace .= "\n\tconst UPDATED_AT = $updated_at;\n";
+                $replace .= "\n    const CREATED_AT = $created_at;";
+                $replace .= "\n    const UPDATED_AT = $updated_at;\n";
+                $replace .= "\n    const DELETED_AT = $deleted_at;\n";
+            }
+        #}
+
+        return str_replace('$TIMESTAMPS$', $replace, $templateData);
+    }
+
+    private function fillRelations($templateData)
+    {
+        $relations = [];
+
+        foreach ($this->commandData->inputFields as $field) {
+            if ( ! empty($field['relation'])) {
+                /**
+                 * Example: "relation": "userStatus,belongsTo,UserStatus,UserStatusId,Id"
+                 *
+                 * 0: relation name
+                 * 1: relation type
+                 * 2: related model name
+                 * 3: foreign key
+                 * 4: referenced key
+                 */
+
+                $relation_parts = explode(',', $field['relation']);
+
+                if (count($relation_parts) != 5) {
+                    dd('Relation of ' . $field['fieldName'] . ' is incorrect!');
+                }
+
+                $models_namespace = config('infyom.laravel_generator.namespace.model', 'App\Models') . '\\';
+
+$relations[] = <<<RELATION
+    public function {$relation_parts[0]}()
+    {
+        return \$this->{$relation_parts[1]}({$models_namespace}{$relation_parts[2]}::class, '{$relation_parts[3]}', '{$relation_parts[4]}');
+    }
+RELATION;
             }
         }
 
-        return str_replace('$TIMESTAMPS$', $replace, $templateData);
+        return str_replace('$RELATIONS$', implode(PHP_EOL . PHP_EOL, $relations), $templateData);
     }
 
     public function generateSwagger($templateData)
@@ -158,13 +201,41 @@ class ModelGenerator
         return $requiredFields;
     }
 
-    private function generateRules()
+    private function generateSampleValues()
+    {
+        $sample_values = [];
+
+        foreach ($this->commandData->inputFields as $field) {
+            if ( ! empty($field['sample'])) {
+                $sample_value = '"'.$field['fieldName'].'" => "'.$field['sample'].'"';
+                $sample_values[] = $sample_value;
+            }
+        }
+
+        return $sample_values;
+    }
+
+    private function generateCreateRules()
     {
         $rules = [];
 
         foreach ($this->commandData->inputFields as $field) {
-            if (!empty($field['validations'])) {
-                $rule = '"'.$field['fieldName'].'" => "'.$field['validations'].'"';
+            if (!empty($field['create_validations'])) {
+                $rule = '"'.$field['fieldName'].'" => "'.$field['create_validations'].'"';
+                $rules[] = $rule;
+            }
+        }
+
+        return $rules;
+    }
+
+    private function generateUpdateRules()
+    {
+        $rules = [];
+
+        foreach ($this->commandData->inputFields as $field) {
+            if (!empty($field['update_validations'])) {
+                $rule = '"'.$field['fieldName'].'" => "'.$field['update_validations'].'"';
                 $rules[] = $rule;
             }
         }

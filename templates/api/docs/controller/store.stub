@@ -1,8 +1,17 @@
 /**
-     * Store a newly created $MODEL_NAME$ in storage.
-     * POST /$MODEL_NAME_PLURAL_CAMEL$
+     * Create a new $MODEL_NAME$
      *
-     * @param Create$MODEL_NAME$APIRequest $request
-     *
-     * @return Response
+     * @Post("/")
+     * @Transaction({
+     *      @Request(headers={"Accept": "application/json"}, body={
+     *          $SAMPLE_VALUES_JSON_PER_LINE$
+     *      }, attributes={
+     *          $CREATE_ATTRIBUTES$
+     *      }),
+     *      @Response(201, headers={"Content-Type": "application/json"}, body={
+     *          "Id": 1,
+     *          $SAMPLE_VALUES_JSON_PER_LINE$
+     *      }),
+     *      @Response(400, headers={"Content-Type": "application/json"}, body={})
+     * })
      */

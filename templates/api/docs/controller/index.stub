@@ -1,7 +1,11 @@
 /**
-     * Display a listing of the $MODEL_NAME$.
-     * GET|HEAD /$MODEL_NAME_PLURAL_CAMEL$
+     * Show all $MODEL_NAME_PLURAL$
      *
-     * @param Request $request
-     * @return Response
+     * @Get("/")
+     * @Request(headers={"Accept": "application/json"})
+     * @Response(200, headers={"Content-Type": "application/json"}, body={
+     *      "Id": 1,
+     *      $SAMPLE_VALUES_JSON_PER_LINE$
+     * })
+     *
      */

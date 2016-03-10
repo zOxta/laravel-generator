@@ -2,6 +2,7 @@
 
 namespace InfyOm\Generator\Commands\API;
 
+use Illuminate\Support\Facades\Route;
 use InfyOm\Generator\Commands\BaseCommand;
 use InfyOm\Generator\Common\CommandData;
 use InfyOm\Generator\Generators\API\APIControllerGenerator;
@@ -21,7 +22,7 @@ class APIGeneratorCommand extends BaseCommand
      *
      * @var string
      */
-    protected $name = 'infyom:api';
+    protected $name = 'zoxta:api';
 
     /**
      * The console command description.
@@ -52,28 +53,28 @@ class APIGeneratorCommand extends BaseCommand
         $this->initAPIGeneratorCommandData();
 
         if (!$this->commandData->options['fromTable']) {
-            $migrationGenerator = new MigrationGenerator($this->commandData);
-            $migrationGenerator->generate();
+//            $migrationGenerator = new MigrationGenerator($this->commandData);
+//            $migrationGenerator->generate();
         }
 
         $modelGenerator = new ModelGenerator($this->commandData);
         $modelGenerator->generate();
 
-        $repositoryGenerator = new RepositoryGenerator($this->commandData);
-        $repositoryGenerator->generate();
+//        $repositoryGenerator = new RepositoryGenerator($this->commandData);
+//        $repositoryGenerator->generate();
 
         $controllerGenerator = new APIControllerGenerator($this->commandData);
         $controllerGenerator->generate();
 
-        $requestGenerator = new APIRequestGenerator($this->commandData);
-        $requestGenerator->generate();
+//        $requestGenerator = new APIRequestGenerator($this->commandData);
+//        $requestGenerator->generate();
 
         $routesGenerator = new APIRoutesGenerator($this->commandData);
         $routesGenerator->generate();
 
         if ($this->commandData->getAddOn('tests')) {
-            $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
-            $repositoryTestGenerator->generate();
+//            $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
+//            $repositoryTestGenerator->generate();
 
             $testTraitGenerator = new TestTraitGenerator($this->commandData);
             $testTraitGenerator->generate();

@@ -13,7 +13,7 @@ return [
 
         'migration'         => base_path('database/migrations/'),
 
-        'model'             => app_path('Models/'),
+        'model'             => app_path('/'),
 
         'repository'        => app_path('Repositories/'),
 
@@ -51,7 +51,7 @@ return [
 
     'namespace' => [
 
-        'model'             => 'App\Models',
+        'model'             => 'App',
 
         'repository'        => 'App\Repositories',
 
@@ -102,7 +102,7 @@ return [
 
     'options' => [
 
-        'softDelete' => true,
+        'softDelete' => false,
 
         'tables_searchable_default' => false,
     ],
@@ -115,10 +115,11 @@ return [
     */
 
     'add_on' => [
+        'api_blueprint' => true,
 
-        'swagger'   => true,
+        'swagger'   => false,
 
-        'tests'     => true,
+        'tests'     => false,
     ],
 
     /*
@@ -132,9 +133,11 @@ return [
 
         'enabled'       => true,
 
-        'created_at'    => 'created_at',
+        'created_at'    => 'CreatedDate',
 
-        'updated_at'    => 'updated_at',
+        'updated_at'    => 'UpdatedDate',
+
+        'deleted_at'    => 'DeletedDate',
     ],
 
 ];

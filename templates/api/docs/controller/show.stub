@@ -1,8 +1,17 @@
 /**
-     * Display the specified $MODEL_NAME$.
-     * GET|HEAD /$MODEL_NAME_PLURAL_CAMEL$/{id}
+     * Retrieve a $MODEL_NAME$
      *
-     * @param  int $id
+     * @Get("/{$MODEL_NAME_CAMEL$}")
+     * @Parameters({
+     *      @Parameter("$MODEL_NAME_CAMEL$: `1`", description="Id of the $MODEL_NAME_CAMEL$ to retrieve", type="integer", required=true)
+     * })
+     * @Transaction({
+     *      @Request(headers={"Accept": "application/json"}),
+     *      @Response(200, headers={"Content-Type": "application/json"}, body={
+     *          "Id": 1,
+     *          $SAMPLE_VALUES_JSON_PER_LINE$
+     *      }),
+     *      @Response(404, headers={"Content-Type": "application/json"}, body={})
+     * })
      *
-     * @return Response
      */

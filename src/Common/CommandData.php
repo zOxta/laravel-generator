@@ -96,7 +96,7 @@ class CommandData
             }
         }
 
-        $this->options['softDelete'] = config('infyom.laravel_generator.options.softDelete', false);
+        $this->options['softDelete'] = config('infyom.laravel_generator.options.softDelete', true);
     }
 
     public function getOption($option)
@@ -116,6 +116,7 @@ class CommandData
     private function prepareAddOns()
     {
         $this->addOns['swagger'] = config('infyom.laravel_generator.add_on.swagger', false);
+        $this->addOns['api_blueprint'] = config('infyom.laravel_generator.add_on.api_blueprint', false);
         $this->addOns['tests'] = config('infyom.laravel_generator.add_on.tests', false);
     }
 
@@ -163,6 +164,9 @@ class CommandData
                 'infyom.laravel_generator.model_extend_class',
                 'Illuminate\Database\Eloquent\Model'
             ),
+            '$SOFT_DELETE_DATES$'  => "\n\tprotected \$dates = ['deleted_at'];\n",
+            '$SOFT_DELETE$'        => "use SoftDeletes;\n",
+            '$SOFT_DELETE_IMPORT$' => "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
         ];
     }
 
