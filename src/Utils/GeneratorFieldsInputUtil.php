@@ -52,7 +52,7 @@ class GeneratorFieldsInputUtil
                 $searchable = false;
             }
 
-            if (isset($field['searchable'])) {
+            if (isset($field['fillable'])) {
                 $fillable = $field['fillable'];
             } else {
                 $fillable = false;
