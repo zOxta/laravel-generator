@@ -2,6 +2,7 @@
 
 namespace InfyOm\Generator\Generators;
 
+use Illuminate\Support\Str;
 use InfyOm\Generator\Common\CommandData;
 use InfyOm\Generator\Utils\FileUtil;
 use InfyOm\Generator\Utils\TableFieldsGenerator;
@@ -132,6 +133,7 @@ class ModelGenerator
     private function fillRelations($templateData)
     {
         $relations = [];
+        $appends = [];
 
         foreach ($this->commandData->inputFields as $field) {
             if ( ! empty($field['relation'])) {
@@ -153,16 +155,47 @@ class ModelGenerator
 
                 $models_namespace = config('infyom.laravel_generator.namespace.model', 'App\Models') . '\\';
 
+                $relation_name = Str::studly($relation_parts[0]);
+                $appends[] = $relation_name;
+
 $relations[] = <<<RELATION
     public function {$relation_parts[0]}()
     {
-        return \$this->{$relation_parts[1]}({$models_namespace}{$relation_parts[2]}::class, '{$relation_parts[3]}', '{$relation_parts[4]}');
+        return \$this->{$relation_parts[1]}({$relation_parts[2]}::class, '{$relation_parts[3]}', '{$relation_parts[4]}');
+    }
+    
+    public function get{$relation_name}Attribute()
+    {
+        if (\${$relation_parts[0]} = \$this->{$relation_parts[0]}()->first()) {
+            if (isset(\${$relation_parts[0]}->Name)) {
+                return \${$relation_parts[0]}->Name;
+            } else if (isset(\${$relation_parts[0]}->Title)) {
+                return \${$relation_parts[0]}->Title;
+            } else {
+                return \${$relation_parts[0]};
+            }
+        }
+        
+        return '';
     }
 RELATION;
             }
         }
 
-        return str_replace('$RELATIONS$', implode(PHP_EOL . PHP_EOL, $relations), $templateData);
+        $appends = implode("','", $appends);
+
+$appends_part = <<<APPENDS
+    /**
+     * The attributes that should be appended.
+     * By default, this is disabled for performance issues 
+     * @var array
+     */
+    # public \$appends = ['$appends'];
+
+
+APPENDS;
+
+        return str_replace('$RELATIONS$', $appends_part . implode(PHP_EOL . PHP_EOL, $relations), $templateData);
     }
 
     public function generateSwagger($templateData)
