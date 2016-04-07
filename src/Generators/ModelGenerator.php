@@ -206,7 +206,7 @@ RELATION;
         $sample_values = [];
 
         foreach ($this->commandData->inputFields as $field) {
-            if ( ! empty($field['sample'])) {
+            if ( ! empty($field['sample']) or isset($field['sample'])) {
                 $sample_value = '"'.$field['fieldName'].'" => "'.$field['sample'].'"';
                 $sample_values[] = $sample_value;
             }
