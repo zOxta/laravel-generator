@@ -10,6 +10,7 @@ use InfyOm\Generator\Generators\API\APIRoutesGenerator;
 use InfyOm\Generator\Generators\API\APITestGenerator;
 use InfyOm\Generator\Generators\MigrationGenerator;
 use InfyOm\Generator\Generators\ModelGenerator;
+use InfyOm\Generator\Generators\ModelAbstractGenerator;
 use InfyOm\Generator\Generators\RepositoryGenerator;
 use InfyOm\Generator\Generators\RepositoryTestGenerator;
 use InfyOm\Generator\Generators\Scaffold\ControllerGenerator;
@@ -61,8 +62,13 @@ class APIScaffoldGeneratorCommand extends ScaffoldBaseCommand
             $migrationGenerator->generate();
         }
 
+        $modelAbstractGenerator = new ModelAbstractGenerator($this->commandData);
+        $modelAbstractGenerator->generate();
+
         $modelGenerator = new ModelGenerator($this->commandData);
         $modelGenerator->generate();
+
+        $this->call('optimize');
 
         $repositoryGenerator = new RepositoryGenerator($this->commandData);
         $repositoryGenerator->generate();

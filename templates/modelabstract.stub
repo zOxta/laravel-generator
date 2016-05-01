@@ -1,0 +1,9 @@
+<?php
+
+namespace $NAMESPACE_MODEL$;
+
+use $NAMESPACE_MODEL_EXTEND$ as Model;
+
+abstract class $MODEL_NAME$Abstract extends Model
+{
+}
